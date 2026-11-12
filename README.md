@@ -259,15 +259,3 @@ MIT License — free to use, modify, and distribute with attribution.
 - [PyPDF](https://pypdf.readthedocs.io) — PDF parsing
 
 ---
-
-## 👤 Author
-
-**[Your Name]**
-- GitHub: [@your-username](https://github.com/your-username)
-- Email: your-email@example.com
-
----
-
-⭐ **If this project helped you, consider giving it a star!**
-
-*Assignment 3 — Generative AI: Intelligent Multi-Document RAG System*
