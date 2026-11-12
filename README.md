@@ -90,3 +90,101 @@ All powered by **free APIs** — no credit card required.
 ---
 
 ## 🏗️ Architecture
+
+┌─────────────────────────────────────────────────────────────┐
+│ User (Streamlit UI) │
+└───────────────────────────┬─────────────────────────────────┘
+│
+┌─────────────▼──────────────┐
+│ Multi-PDF Upload (Sidebar)│
+└─────────────┬──────────────┘
+│
+┌─────────────▼──────────────┐
+│ Ingestion & Chunking │
+│ (PyPDFLoader + Splitter) │
+└─────────────┬──────────────┘
+│
+┌─────────────▼──────────────┐
+│ Embedding (Gemini API) │
+└─────────────┬──────────────┘
+│
+┌─────────────▼──────────────┐
+│ ChromaDB Vector Store │
+└─────────────┬──────────────┘
+│
+┌───────────────────────▼─────────────────────────┐
+│ User asks a question │
+└───────────────────────┬─────────────────────────┘
+│
+┌─────────────▼──────────────┐
+│ Query Reformulation │
+│ (uses chat history) │
+└─────────────┬──────────────┘
+│
+┌─────────────▼──────────────┐
+│ Similarity Search (top-k) │
+└─────────────┬──────────────┘
+│
+┌─────────────▼──────────────┐
+│ Guardrail: Is context │
+│ sufficient? │
+└────┬─────────────────┬──────┘
+│ Yes │ No
+┌─────────▼───────┐ ┌──────▼─────────┐
+│ Generate Answer │ │ Fallback Reply │
+│ with Citations │ │ "Not found" │
+└─────────┬───────┘ └──────┬─────────┘
+│ │
+┌─────────▼─────────────────▼──────┐
+│ Display Answer + Sources in UI │
+│ Save turn to Memory │
+└──────────────────────────────────┘
+
+text
+
+---
+
+## 🛠️ Tech Stack
+
+| Component | Technology | Purpose |
+|---|---|---|
+| **Frontend** | Streamlit | Chat interface + file uploader |
+| **Orchestration** | LangChain | Chains, prompts, memory, loaders |
+| **LLM (Generation)** | Groq (Llama 3.1 8B) | Fast, free inference |
+| **Embeddings** | Google Gemini (`embedding-001`) | Free embedding API |
+| **Vector Store** | ChromaDB | In-memory similarity search |
+| **PDF Parsing** | PyPDFLoader | Per-page text extraction |
+| **Memory** | LangChain `ConversationBufferWindowMemory` | Conversational context |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- **Python 3.10+**
+- **pip** package manager
+- Free API keys for **Groq** and **Google Gemini** (see [Free API Keys](#-free-api-keys))
+
+### Installation
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/multi-doc-rag.git
+cd multi-doc-rag
+
+# 2. Create and activate a virtual environment
+python -m venv .venv
+# Windows:
+.venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Copy the environment file and add your keys
+cp .env.example .env
+# Now edit .env and paste your GROQ_API_KEY and GOOGLE_API_KEY
+
+# 5. Run the app
+streamlit run app.py
